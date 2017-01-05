@@ -55,6 +55,8 @@ Direc Snake::getDirection() const {
 
 void Snake::setMap(std::shared_ptr<Map> m) {
     map = m;
+
+    hamilton.generate(*map);
 }
 
 const Pos& Snake::getHead() const {
@@ -141,64 +143,28 @@ void Snake::findMaxPathToTail(std::list<Direc> &path) {
 void Snake::decideNext() {
     if (isDead() || !map) {
         return;
-    } else if (!map->hasFood()) {
-        direc = NONE;
-        return;
     }
 
-    // Create a virtual snake
-    Snake tmpSnake(*this);
-    shared_ptr<Map> tmpMap = std::make_shared<Map>(*map);
-    tmpSnake.setMap(tmpMap);
+    Pos nextH = hamilton.next(getHead());
+    Direc dirH = getHead().getDirectionTo(nextH);
 
-    list<Direc> pathToFood, pathToTail;
-
-    // Step1:
-    // If a path to food is found, move the temp snake to eat the food and to 
-    // check if there is path to the tail of the temp snake. If there is no path
-    // to tail after eating the food, it means that this path is dangerous and
-    // will not be chosen.
-    // Notice that only if the length of the path to tail is more than
-    // 1 can the snake move to its tail because that the length equals
-    // 1 means that the head is adjacent to the tail, which will make 
-    // the snake die after moving towards the tail.
-    tmpSnake.findMinPathToFood(pathToFood);
+    // Step1: Find shortest path, follow if not before tail..head
+    list<Direc> pathToFood;
+    findMinPathToFood(pathToFood);
     if (!pathToFood.empty()) {
-        tmpSnake.move(pathToFood);
-        if (tmpMap->isAllBody()) {  // Check if the map is full
-            this->setDirection(*(pathToFood.begin()));
+        Direc dirF = *(pathToFood.begin());
+        Pos nextF = getHead().getAdjPos(dirF);
+        if (hamilton.lessthan(getTail(), getHead(), nextF)
+                && hamilton.lessthan(getTail(), nextF, map->getFood())) {
+            this->setDirection(dirF);
             return;
-        } else {
-            tmpSnake.findMaxPathToTail(pathToTail);
-            if (pathToTail.size() > 1) {
-                this->setDirection(*(pathToFood.begin()));
-                return;
-            }
         }
     }
 
     // Step2:
     // If no suitable path is found in step1, make the snake move
-    // to its tail along the longest path.
-    this->findMaxPathToTail(pathToTail);
-    if (pathToTail.size() > 1) {
-        this->setDirection(*(pathToTail.begin()));
-        return;
-    }
-
-    // Step3:
-    // If no available path is found in step 1 and 2, then find a
-    // direction that is the farthest from the food.
-    auto head = getHead();
-    int maxDist = -1;
-    auto adjPoints = head.getAllAdjPos();
-    for (const auto &p : adjPoints) {
-        if (map->isSafe(p)) {
-            int d = Map::estimateDist(p, map->getFood());
-            if (d > maxDist) {
-                maxDist = d;
-                direc = head.getDirectionTo(p);
-            }
-        }
+    // along the hamilton path
+    {
+        this->setDirection(dirH);
     }
 }
