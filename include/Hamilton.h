@@ -10,7 +10,6 @@ class Hamilton {
 public:
     void generate(const Map& map);
     Pos next(const Pos& pos) const;
-    bool between(const Pos& begin, const Pos& end, const Pos& test) const;
     bool lessthan(const Pos& anchor, const Pos& a, const Pos& b) const;
 
     friend std::ostream& operator<<(std::ostream& os, const Hamilton& h);

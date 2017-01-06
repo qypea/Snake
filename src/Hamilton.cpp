@@ -83,27 +83,6 @@ Pos Hamilton::next(const Pos& pos) const {
     return pos.getAdjPos(steps[pos.getX()][pos.getY()]);
 }
 
-bool Hamilton::between(const Pos& begin, const Pos& end,
-                       const Pos& test) const {
-    int beginD = sequence[begin.getX()][begin.getY()];
-    int endD = sequence[end.getX()][end.getY()];
-    int testD = sequence[test.getX()][test.getY()];
-
-    endD -= beginD;
-    if (endD < 0) {
-        endD += maxSequence;
-    }
-
-    testD -= beginD;
-    if (testD < 0) {
-        testD += maxSequence;
-    }
-
-    beginD = 0;
-
-    return testD < endD;
-}
-
 bool Hamilton::lessthan(const Pos& anchor, const Pos& a, const Pos& b) const {
     int anchorD = sequence[anchor.getX()][anchor.getY()];
     int aD = sequence[a.getX()][a.getY()];
