@@ -33,6 +33,7 @@ public:
     Sleep current thread.
     */
     void sleepFor(const long ms) const;
+    void sleepUntil(std::chrono::steady_clock::time_point tp, const long ms) const;
 
     /*
     Print a message and exit the game. (thread-safe)

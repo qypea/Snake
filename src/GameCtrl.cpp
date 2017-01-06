@@ -30,6 +30,10 @@ void GameCtrl::sleepFor(const long ms) const {
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
+void GameCtrl::sleepUntil(std::chrono::steady_clock::time_point tp, const long ms) const {
+    std::this_thread::sleep_until(tp + std::chrono::milliseconds(ms));
+}
+
 void GameCtrl::sleepByFPS() const {
     sleepFor(static_cast<long>((1.0 / fps) * 1000));
 }
@@ -365,13 +369,15 @@ void GameCtrl::keyboardMove(Snake &s, const Direc &d) {
 void GameCtrl::autoMove() {
     try {
         while (threadWork) {
-            sleepFor(moveInterval);
+            auto iterstart = std::chrono::steady_clock::now();
             if (!pause) {
                 if (enableAI) {
                     snake.decideNext();
                 }
                 moveSnake(snake);
             }
+
+            sleepUntil(iterstart, moveInterval);
         }
     } catch (const std::exception &e) {
         exitGameWithError(e.what());
