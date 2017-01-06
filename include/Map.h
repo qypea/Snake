@@ -135,13 +135,15 @@ private:
     /*
     Initialize map content before searching.
     */
-    void init();
+    void initMin();
+    void initMax();
 
     /*
     Recursive method called in findMaxPath().
     */
     void findMax(const Pos &curPos, const Direc &curDirec,
                  const Pos &from, const Pos &to, std::list<Direc> &path);
+    void markPathVisited(const Pos &from, const std::list<Direc> &path);
 
     /*
     Construct the path between two positions.

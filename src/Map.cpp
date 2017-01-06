@@ -58,7 +58,8 @@ bool Map::isTail(const Pos &p) const {
 }
 
 bool Map::isEmpty(const Pos &p) const {
-    return isInside(p) && content[p.getX()][p.getY()].getType() == point_type::EMPTY;
+    return isInside(p) && (content[p.getX()][p.getY()].getType() == point_type::EMPTY
+                           || content[p.getX()][p.getY()].getType() >= point_type::TEST_VISIT);
 }
 
 bool Map::isAllBody() const {
@@ -172,14 +173,22 @@ void Map::constructPath(const Pos &from, const Pos &to, list<Direc> &path) const
     }
 }
 
-void Map::init() {
+void Map::initMin() {
     auto rows = getRowCount(), cols = getColCount();
     for (size_type i = 1; i < rows - 1; ++i) {
         for (size_type j = 1; j < cols - 1; ++j) {
             content[i][j].setDist(INF);
-            content[i][j].setVisit(false);
             Pos p(i, j);
             content[i][j].setPos(p);
+        }
+    }
+}
+
+void Map::initMax() {
+    auto rows = getRowCount(), cols = getColCount();
+    for (size_type i = 1; i < rows - 1; ++i) {
+        for (size_type j = 1; j < cols - 1; ++j) {
+            content[i][j].setVisit(false);
         }
     }
 }
@@ -190,7 +199,7 @@ void Map::findMinPath(const Pos &from, const Pos &to, const Direc &initDirec, li
     }
 
     // Prepare work for searching
-    init();
+    initMin();
     path.clear();
     getPoint(from).setDist(0);
     queue<Pos> openList;
@@ -225,7 +234,14 @@ void Map::findMinPath(const Pos &from, const Pos &to, const Direc &initDirec, li
         // Traverse adjacent positions
         for (const auto &adjPos : adjPositions) {
             Point &adjPoint = getPoint(adjPos);
-            if (isEmpty(adjPos) && adjPoint.getDist() == INF) {
+            if (isEmpty(adjPos) && adjPoint.getDist() == INF
+                    && adjPoint.isVisit() == false) {
+
+                if (curPos == from && curPoint.isVisit() == true
+                        && adjPos == to) {
+                    continue; // Don't allow super-short solutions
+                }
+
                 adjPoint.setParent(curPos);
                 adjPoint.setDist(curPoint.getDist() + 1);
                 openList.push(adjPos);
@@ -234,57 +250,72 @@ void Map::findMinPath(const Pos &from, const Pos &to, const Direc &initDirec, li
     }
 }
 
+void Map::markPathVisited(const Pos& from, const list<Direc>& path) {
+    Pos p = from;
+    getPoint(p).setVisit(true);
+
+    for (const Direc &d : path) {
+        p = p.getAdjPos(d);
+        getPoint(p).setVisit(true);
+    }
+}
+
 void Map::findMaxPath(const Pos &from, const Pos &to, const Direc &initDirec, list<Direc> &path) {
     if (!isInside(from) || !isInside(to)) {
         return;
     }
-    init();
+    initMax();
     path.clear();
-    findMax(from, initDirec, from, to, path);
-    showPathIfNeed(from, path);
-}
 
-void Map::findMax(const Pos &curPos, const Direc &curDirec, const Pos &from, const Pos &to, list<Direc> &path) {
-    if (!path.empty()) {  // A solution is found
+    findMinPath(from, to, initDirec, path); // Find a path first
+    if (path.empty()) {
         return;
     }
-    getPoint(curPos).setVisit(true);
-    showVisitPosIfNeed(curPos);
-    if (curPos == to) {  // Check if the goal is found
-        constructPath(from, to, path);
-    } else {
+    showPathIfNeed(from, path);
 
-        // Compute estimated distance of adjacent points
-        auto adjPositions = curPos.getAllAdjPos();
-        if (adjPositions.empty()) {
-            return;
-        }
-        for (const auto &pos : adjPositions) {
-            Point &adjPoint = getPoint(pos);
-            if (adjPoint.getDist() == INF) {
-                adjPoint.setDist(estimateDist(pos, to));
+    // Try to find alternate paths between each pair of points
+    // until we can't find any more
+    size_t size;
+    do {
+        size = path.size();
+
+        // Search for a different path between each pair
+        Pos first = from;
+        for (auto i=path.begin(); i!=path.end();) {
+
+            // Mark all points in path as visited, so they're not found below
+            markPathVisited(from, path);
+
+            Pos second = first.getAdjPos(*i);
+            getPoint(second).setVisit(false);
+
+            list<Direc> subpath;
+            findMinPath(first, second, *i, subpath);
+
+            if (subpath.size() > 1) {
+                showPathIfNeed(first, subpath);
+                if (i == path.begin()) {
+                    // You can't -- begin or things break
+                    path.splice(i, subpath);
+                    path.erase(i);
+                    i = path.begin();
+
+                } else {
+                    auto j = i;
+                    j--;
+                    path.splice(i, subpath);
+                    path.erase(i);
+                    i = j;
+                    i++;
+                }
+            } else {
+                i++;
+                first = second;
             }
         }
 
-        // Arrange the order of traversing to make the result path as straight as possible
-        std::sort(adjPositions.begin(), adjPositions.end(), [&](const Pos &a, const Pos &b) {
-            return getPoint(a).getDist() > getPoint(b).getDist();
-        });
-        auto maxDist = getPoint(adjPositions[0]).getDist();
-        for (unsigned i = 0; i < adjPositions.size(); ++i) {
-            if (getPoint(adjPositions[i]).getDist() == maxDist
-                && curDirec == curPos.getDirectionTo(adjPositions[i])) {
-                std::swap(adjPositions[0], adjPositions[i]);
-                break;
-            }
-        }
+        showPathIfNeed(from, path);
+    } while (path.size() > size);
 
-        // Traverse adjacent positions
-        for (const auto &adjPos : adjPositions) {
-            if (isEmpty(adjPos) && !getPoint(adjPos).isVisit()) {
-                getPoint(adjPos).setParent(curPos);
-                findMax(adjPos, curPos.getDirectionTo(adjPos), from, to, path);
-            }
-        }
-    }
+    initMax();
 }
