@@ -83,19 +83,14 @@ Pos Hamilton::next(const Pos& pos) const {
     return pos.getAdjPos(steps[pos.getX()][pos.getY()]);
 }
 
-bool Hamilton::lessthan(const Pos& anchor, const Pos& a, const Pos& b) const {
+Hamilton::location_type Hamilton::location(const Pos& anchor, const Pos& a) const {
     int anchorD = sequence[anchor.getX()][anchor.getY()];
     int aD = sequence[a.getX()][a.getY()];
-    int bD = sequence[b.getX()][b.getY()];
 
     if (aD < anchorD) {
         aD += maxSequence;
     }
-    if (bD < anchorD) {
-        bD += maxSequence;
-    }
-
-    return aD < bD;
+    return aD;
 }
 
 std::ostream& operator<<(std::ostream& out, const Hamilton& h) {

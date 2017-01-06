@@ -154,8 +154,10 @@ void Snake::decideNext() {
     if (!pathToFood.empty()) {
         Direc dirF = *(pathToFood.begin());
         Pos nextF = getHead().getAdjPos(dirF);
-        if (hamilton.lessthan(getTail(), getHead(), nextF)
-                && hamilton.lessthan(getTail(), nextF, map->getFood())) {
+        auto headLoc = hamilton.location(getTail(), getHead());
+        auto nextLoc = hamilton.location(getTail(), nextF);
+        auto foodLoc = hamilton.location(getTail(), map->getFood());
+        if (headLoc < nextLoc && nextLoc < foodLoc) {
             this->setDirection(dirF);
             return;
         }
