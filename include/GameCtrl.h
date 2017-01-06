@@ -77,6 +77,8 @@ private:
 
     bool pause = false;  // Field to implement pause/resume game
 
+    std::chrono::steady_clock::duration thinkingTime;
+
     Snake snake;
     std::shared_ptr<Map> map;
 

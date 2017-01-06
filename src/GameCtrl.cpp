@@ -288,7 +288,11 @@ void GameCtrl::drawMapContent() const {
     }
 
     if (!runTest) {
-        Console::write("Score: " + intToStr(score) + "\n");
+        Console::write("Score: " + intToStr(score) + "    \n");
+        Console::write("Time: "
+                        + intToStr(std::chrono::duration_cast<std::chrono::microseconds>(thinkingTime).count())
+                        + "us  / "
+                        + intToStr(moveInterval) + "ms               \n");
     }
 }
 
@@ -377,8 +381,8 @@ void GameCtrl::autoMove() {
                 moveSnake(snake);
             }
             auto iterend = std::chrono::steady_clock::now();
-            if (iterend - iterstart
-                    >= std::chrono::milliseconds(moveInterval)) {
+            thinkingTime = iterend - iterstart;
+            if (thinkingTime >= std::chrono::milliseconds(moveInterval)) {
                 throw std::range_error("Took too long to decide");
             }
 
