@@ -376,6 +376,11 @@ void GameCtrl::autoMove() {
                 }
                 moveSnake(snake);
             }
+            auto iterend = std::chrono::steady_clock::now();
+            if (iterend - iterstart
+                    >= std::chrono::milliseconds(moveInterval)) {
+                throw std::range_error("Took too long to decide");
+            }
 
             sleepUntil(iterstart, moveInterval);
         }
