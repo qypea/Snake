@@ -288,16 +288,29 @@ void GameCtrl::drawMapContent() const {
     }
 }
 
+std::string dirToStr(Direc d) {
+    switch (d) {
+        case LEFT:
+            return "<"; break;
+        case UP:
+            return "^"; break;
+        case RIGHT:
+            return ">"; break;
+        case DOWN:
+            return "v"; break;
+        case NONE:
+        default:
+            return "O"; break;
+    }
+}
+
 void GameCtrl::drawTestPoint(const Point &p, const ConsoleColor &consoleColor) const {
     string pointStr = "";
-    if (p.getDist() == INF) {
-        pointStr = "In";
+    if (p.getParent() == Pos::INVALID || p.getPos() == Pos::INVALID) {
+        pointStr = "  ";
     } else {
-        auto dist = p.getDist();
-        pointStr = intToStr(dist);
-        if (dist / 10 == 0) {
-            pointStr.insert(0, " ");
-        } 
+        pointStr += dirToStr(p.getParent().getDirectionTo(p.getPos()));
+        pointStr += " ";
     }
     Console::writeWithColor(pointStr, consoleColor);
 }
@@ -395,19 +408,7 @@ void GameCtrl::testGraphSearch() {
     string res = "Path from " + from.toString() + " to " + to.toString()
         + " of length " + intToStr(path.size()) + ":\n";
     for (const auto &d : path) {
-        switch (d) {
-            case LEFT:
-                res += "L "; break;
-            case UP:
-                res += "U "; break;
-            case RIGHT:
-                res += "R "; break;
-            case DOWN:
-                res += "D "; break;
-            case NONE:
-            default:
-                res += "NONE "; break;
-        }
+        res += dirToStr(d);
     }
     exitGame(res);
 }

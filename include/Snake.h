@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Map.h"
+#include "Hamilton.h"
 #include <memory>
 
 /*
@@ -60,6 +61,7 @@ private:
 
     std::list<Pos> body;
     std::shared_ptr<Map> map;
+    Hamilton hamilton;
 
     Point::Type headType;
     Point::Type bodyType;

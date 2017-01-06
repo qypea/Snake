@@ -178,6 +178,8 @@ void Map::init() {
         for (size_type j = 1; j < cols - 1; ++j) {
             content[i][j].setDist(INF);
             content[i][j].setVisit(false);
+            Pos p(i, j);
+            content[i][j].setPos(p);
         }
     }
 }
