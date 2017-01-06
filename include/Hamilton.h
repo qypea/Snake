@@ -10,7 +10,7 @@ class Hamilton {
 public:
     typedef uint location_type;
 
-    void generate(const Map& map);
+    void generate(Map& map);
     Pos next(const Pos& pos) const;
     location_type location(const Pos& anchor, const Pos& a) const;
 
