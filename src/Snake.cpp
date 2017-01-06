@@ -157,7 +157,11 @@ void Snake::decideNext() {
         auto headLoc = hamilton.location(getTail(), getHead());
         auto nextLoc = hamilton.location(getTail(), nextF);
         auto foodLoc = hamilton.location(getTail(), map->getFood());
-        if (headLoc < nextLoc && nextLoc <= foodLoc) {
+        auto nextToTail = hamilton.location(nextF, getTail());
+
+        if (headLoc < nextLoc
+                && nextLoc <= foodLoc
+                && nextToTail > 10) {
             this->setDirection(dirF);
             return;
         }
