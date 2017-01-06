@@ -106,6 +106,7 @@ private:
     void initMap();
     void initSnakes();
     void initFiles();
+    void teardown();
 
     /*
     Move the snake and check if game is over. (thread-safe)
@@ -121,6 +122,7 @@ private:
     Start all threads.
     */
     void startThreads();
+    void stopThreads();
 
     /*
     Thread contents for gameThread

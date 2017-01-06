@@ -37,22 +37,12 @@ void GameCtrl::sleepByFPS() const {
 void GameCtrl::exitGame(const std::string &msg) {
     mutexExit.lock();
 
-    // Stop threads
-    sleepFor(100);
+    // Ask main to stop threads
     threadWork = false;
-    sleepFor(100);
-
-    // Close movement file
-    if (movementFile) {
-        fclose(movementFile);
-        movementFile = nullptr;
-    }
 
     // Print message
     Console::setCursor(0, mapRowCnt + 1);
     Console::writeWithColor(msg + "\n", ConsoleColor(WHITE, BLACK, true, false));
-    mutexExit.unlock();
-    exit(0);
 }
 
 void GameCtrl::exitGameWithError(const std::string &err) {
@@ -94,14 +84,13 @@ int GameCtrl::run() {
             //testCreateFood();
             testGraphSearch();
         }
-        while (true) {
+        while (threadWork) {
             sleepByFPS();
         }
-        return 0;
-    } catch (const std::exception &e) { 
+    } catch (const std::exception &e) {
         exitGameWithError(e.what());
-        return -1;
     }
+    return 0;
 }
 
 void GameCtrl::init() {
@@ -114,6 +103,16 @@ void GameCtrl::init() {
         }
     }
     startThreads();
+}
+
+void GameCtrl::teardown() {
+    stopThreads();
+
+    // Close movement file
+    if (movementFile) {
+        fclose(movementFile);
+        movementFile = nullptr;
+    }
 }
 
 void GameCtrl::initMap() {
@@ -215,6 +214,15 @@ void GameCtrl::startThreads() {
     if (!runTest) {
         moveThread = std::thread(&GameCtrl::autoMove, this);
         moveThread.detach();
+    }
+}
+
+void GameCtrl::stopThreads() {
+    threadWork = false;
+    gameThread.join();
+    keyboardThread.join();
+    if (!runTest) {
+        moveThread.join();
     }
 }
 
