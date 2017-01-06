@@ -22,6 +22,10 @@ void Point::setParent(const Pos &p_) {
     parent = p_;
 }
 
+void Point::setPos(const Pos &p_) {
+    pos = p_;
+}
+
 void Point::setVisit(const bool v) {
     visit = v;
 }
@@ -32,6 +36,10 @@ Point::value_type Point::getDist() const {
 
 Pos Point::getParent() const {
     return parent;
+}
+
+Pos Point::getPos() const {
+    return pos;
 }
 
 bool Point::isVisit() const {

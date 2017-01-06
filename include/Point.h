@@ -26,10 +26,12 @@ public:
     void setType(Type type_);
     void setDist(const value_type dist_);
     void setParent(const Pos &p_);
+    void setPos(const Pos &p_);
     void setVisit(const bool v);
     Type getType() const;
     value_type getDist() const;
     Pos getParent() const;
+    Pos getPos() const;
     bool isVisit() const;
 
 private:
@@ -39,4 +41,5 @@ private:
     bool visit = false;
     value_type dist = INF;
     Pos parent = Pos::INVALID;
+    Pos pos = Pos::INVALID;
 };
