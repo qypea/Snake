@@ -109,6 +109,9 @@ void Snake::move(const std::list<Direc> &path) {
 }
 
 void Snake::findPathTo(const int type, const Pos &to, std::list<Direc> &path) {
+    if (to == Pos::INVALID) {
+        return;
+    }
     // To search the path to goal, first set the goal grid type to EMPTY
     // and then start searching because the original type of the goal
     // grid may be a FOOD or another type which is ignored by the search algorithm.
