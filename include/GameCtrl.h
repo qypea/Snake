@@ -65,6 +65,9 @@ public:
 private:
     Map::size_type mapRowCnt = 10;
     Map::size_type mapColCnt = 10;
+    long int score = 0;
+    long int scoreFood = 100;
+    long int scoreTime = -1;
     double fps = 60.0;
     long moveInterval = 30;
     bool enableAI = true;
@@ -77,9 +80,8 @@ private:
     std::shared_ptr<Map> map;
 
     bool threadWork = true;      // Thread running switcher
-    std::thread drawThread;      // Thread to draw the map
+    std::thread gameThread;      // Thread to draw the map
     std::thread keyboardThread;  // Thread to receive keyboard instructions
-    std::thread foodThread;      // Thread to create food
     std::thread moveThread;      // Thread to move the snake
 
     std::mutex mutexMove;  // Mutex for moveSnake()
@@ -121,10 +123,10 @@ private:
     void startThreads();
 
     /*
-    Callback for draw thread.
-    Draw the game elements.
+    Thread contents for gameThread
+    Draw the game elements, add food, etc
     */
-    void draw();
+    void game();
 
     /*
     Draw the map content.

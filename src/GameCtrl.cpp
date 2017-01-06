@@ -208,21 +208,26 @@ void GameCtrl::writeMapToFile() const {
 
 void GameCtrl::startThreads() {
     threadWork = true;
-    drawThread = std::thread(&GameCtrl::draw, this);
-    drawThread.detach();
+    gameThread = std::thread(&GameCtrl::game, this);
+    gameThread.detach();
     keyboardThread = std::thread(&GameCtrl::keyboard, this);
     keyboardThread.detach();
     if (!runTest) {
-        foodThread = std::thread(&GameCtrl::createFood, this);
-        foodThread.detach();
         moveThread = std::thread(&GameCtrl::autoMove, this);
         moveThread.detach();
     }
 }
 
-void GameCtrl::draw() {
+void GameCtrl::game() {
     try {
         while (threadWork) {
+            if (!runTest) {
+                score += scoreTime;
+                if (!map->hasFood()) {
+                    map->createRandFood();
+                    score += scoreFood;
+                }
+            }
             drawMapContent();
             sleepByFPS();
         }
@@ -268,6 +273,10 @@ void GameCtrl::drawMapContent() const {
             }
         }
         Console::write("\n");
+    }
+
+    if (!runTest) {
+        Console::write("Score: " + intToStr(score) + "\n");
     }
 }
 
@@ -329,19 +338,6 @@ void GameCtrl::keyboardMove(Snake &s, const Direc &d) {
         } else {
             s.setDirection(d);
         }
-    }
-}
-
-void GameCtrl::createFood() {
-    try {
-        while (threadWork) {
-            if (!map->hasFood()) {
-                map->createRandFood();
-            }
-            sleepByFPS();
-        }
-    } catch (const std::exception &e) {
-        exitGameWithError(e.what());
     }
 }
 
