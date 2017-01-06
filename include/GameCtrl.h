@@ -65,6 +65,9 @@ public:
 private:
     Map::size_type mapRowCnt = 10;
     Map::size_type mapColCnt = 10;
+    long int score = 0;
+    long int scoreFood = 100;
+    long int scoreTime = -1;
     double fps = 60.0;
     long moveInterval = 30;
     bool enableAI = true;

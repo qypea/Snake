@@ -222,8 +222,10 @@ void GameCtrl::game() {
     try {
         while (threadWork) {
             if (!runTest) {
+                score += scoreTime;
                 if (!map->hasFood()) {
                     map->createRandFood();
+                    score += scoreFood;
                 }
             }
             drawMapContent();
@@ -271,6 +273,10 @@ void GameCtrl::drawMapContent() const {
             }
         }
         Console::write("\n");
+    }
+
+    if (!runTest) {
+        Console::write("Score: " + intToStr(score) + "\n");
     }
 }
 
