@@ -56,6 +56,10 @@ Direc Snake::getDirection() const {
 void Snake::setMap(std::shared_ptr<Map> m) {
     map = m;
 
+    std::vector<Pos> emptySpaces;
+    map->getEmptyPoints(emptySpaces);
+    safeLength = emptySpaces.size() * 3 / 4;
+
     hamilton.generate(*map);
 }
 
@@ -161,7 +165,8 @@ void Snake::decideNext() {
 
         if (headLoc < nextLoc
                 && nextLoc <= foodLoc
-                && nextToTail > 10) {
+                && nextToTail > 10
+                && length() < safeLength) {
             this->setDirection(dirF);
             return;
         }

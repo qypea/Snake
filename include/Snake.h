@@ -58,6 +58,7 @@ public:
 private:
     bool dead = false;
     Direc direc = NONE;
+    size_type safeLength;
 
     std::list<Pos> body;
     std::shared_ptr<Map> map;
