@@ -25,5 +25,7 @@ int main() {
     game->setMapRow(10);
     game->setMapCol(10);
 
+    game->hardMode = true;
+
     return game->run();
 }

@@ -126,12 +126,22 @@ void GameCtrl::initMap() {
             + intToStr(mapRowCnt) + "*" + intToStr(mapColCnt);
         throw std::range_error(msg.c_str());
     }
-    
+
     map = std::make_shared<Map>(mapRowCnt, mapColCnt);
     if (!map) {
         exitGame(MSG_BAD_ALLOC);
     } else {
         // Add some extra walls manully
+        if (hardMode) {
+            if (mapRowCnt != 20 || mapColCnt != 20) {
+                throw std::range_error("GameCtrl.testGraphSearch(): Require map size 20*20.");
+            }
+            for (int i = 4; i < 16; ++i) {
+                map->getPoint(Pos(i, 9)).setType(Point::Type::WALL);   // vertical
+                map->getPoint(Pos(4, i)).setType(Point::Type::WALL);   // horizontal #1
+                map->getPoint(Pos(15, i)).setType(Point::Type::WALL);  // horizontal #2
+            }
+        }
     }
 }
 
@@ -409,13 +419,6 @@ void GameCtrl::testGraphSearch() {
     list<Direc> path;
     map->setShowSearchDetails(true);
 
-    // Add walls for testing
-    for (int i = 4; i < 16; ++i) {
-        map->getPoint(Pos(i, 9)).setType(Point::Type::WALL);   // vertical
-        map->getPoint(Pos(4, i)).setType(Point::Type::WALL);   // horizontal #1
-        map->getPoint(Pos(15, i)).setType(Point::Type::WALL);  // horizontal #2
-    }
-   
     Pos from(6, 7), to(14, 13);
     map->findMinPath(from, to, Direc::NONE, path);
     //map->findMaxPath(from, to, Direc::NONE, path);

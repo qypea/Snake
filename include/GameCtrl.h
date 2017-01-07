@@ -63,6 +63,8 @@ public:
     */
     int run();
 
+    bool hardMode = false;
+
 private:
     Map::size_type mapRowCnt = 10;
     Map::size_type mapColCnt = 10;
