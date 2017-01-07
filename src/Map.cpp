@@ -149,7 +149,9 @@ void Map::showPosSearchDetail(const Pos &p, const point_type &t) {
 
 void Map::showVisitPosIfNeed(const Pos &n) {
     if (showSearchDetails) {
-        showPosSearchDetail(n, point_type::TEST_VISIT);
+        if (getPoint(n).getType() != point_type::TEST_PATH) {
+            showPosSearchDetail(n, point_type::TEST_VISIT);
+        }
     }
 }
 
