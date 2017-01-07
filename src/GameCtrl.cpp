@@ -45,7 +45,7 @@ void GameCtrl::exitGame(const std::string &msg) {
     threadWork = false;
 
     // Print message
-    Console::setCursor(0, mapRowCnt + 1);
+    Console::setCursor(0, mapRowCnt + 2);
     Console::writeWithColor(msg + "\n", ConsoleColor(WHITE, BLACK, true, false));
 }
 
