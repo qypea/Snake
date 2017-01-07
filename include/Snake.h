@@ -55,6 +55,8 @@ public:
     void setMap(std::shared_ptr<Map> m);
     Direc getDirection() const;
 
+    void createBody();
+
 private:
     bool dead = false;
     Direc direc = NONE;

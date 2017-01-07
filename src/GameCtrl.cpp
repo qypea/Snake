@@ -150,9 +150,7 @@ void GameCtrl::initSnakes() {
     snake.setBodyType(Point::Type::SNAKE_BODY);
     snake.setTailType(Point::Type::SNAKE_TAIL);
     snake.setMap(map);
-    snake.addBody(Pos(1, 3));
-    snake.addBody(Pos(1, 2));
-    snake.addBody(Pos(1, 1));
+    snake.createBody();
 }
 
 void GameCtrl::initFiles() {

@@ -1,6 +1,8 @@
 #include "Snake.h"
 #include "GameCtrl.h"
 
+#include <algorithm>
+
 using std::vector;
 using std::list;
 using std::shared_ptr;
@@ -61,6 +63,15 @@ void Snake::setMap(std::shared_ptr<Map> m) {
     safeLength = emptySpaces.size() * 3 / 4;
 
     hamilton.generate(*map);
+}
+
+void Snake::createBody() {
+    Pos p(1,1);
+    for (int i=0; i<3; i++) {
+        addBody(p);
+        p = hamilton.next(p);
+    }
+    std::reverse(body.begin(), body.end());
 }
 
 const Pos& Snake::getHead() const {
