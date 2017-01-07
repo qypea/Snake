@@ -181,4 +181,5 @@ private:
     Test graph search algorithms.
     */
     void testGraphSearch();
+    void testHamilton();
 };

@@ -86,7 +86,8 @@ int GameCtrl::run() {
         init();
         if (runTest) {
             //testCreateFood();
-            testGraphSearch();
+            //testGraphSearch();
+            testHamilton();
         }
         while (threadWork) {
             sleepByFPS();
@@ -426,4 +427,15 @@ void GameCtrl::testGraphSearch() {
         res += dirToStr(d);
     }
     exitGame(res);
+}
+
+void GameCtrl::testHamilton() {
+    map->setShowSearchDetails(true);
+
+    Hamilton ham;
+    ham.generate(*map);
+
+    std::cout << ham << std::endl;
+
+    exitGame("Hamilton calculated ok");
 }
