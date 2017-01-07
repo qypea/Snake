@@ -90,18 +90,21 @@ void Map::getEmptyPoints(vector<Pos> &res) const {
     }
 }
 
-void Map::createRandFood() {
+Pos Map::randomEmpty() const {
     vector<Pos> emptyPoints;
     getEmptyPoints(emptyPoints);
     if (!emptyPoints.empty()) {
-        createFood(emptyPoints[random(0, emptyPoints.size() - 1)]);
+        return emptyPoints[random(0, emptyPoints.size() - 1)];
+    } else {
+        return Pos::INVALID;
     }
-    // Test code to create food at a given order.
-    //static vector<Pos> tmp = {Pos(2, 3), Pos(3, 3), Pos(3, 2), Pos(2, 2), Pos(2, 1), Pos(3, 1)};
-    //static int cnt = 0;
-    //if (cnt >= 0 && cnt <= 5) {
-    //    createFood(tmp[cnt++]);
-    //}
+}
+
+void Map::createRandFood() {
+    Pos p = randomEmpty();
+    if (p != Pos::INVALID) {
+        createFood(p);
+    }
 }
 
 void Map::createFood(const Pos &pos) {

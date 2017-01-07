@@ -50,6 +50,7 @@ public:
     @param res the result will be stored in this field.
     */
     void getEmptyPoints(std::vector<Pos> &res) const;
+    Pos randomEmpty() const;
 
     /*
     Create food at an empty position randomly.
