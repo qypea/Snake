@@ -64,12 +64,13 @@ bool Map::isEmpty(const Pos &p) const {
 
 bool Map::isAllBody() const {
     auto rows = getRowCount(), cols = getColCount();
-    for (size_type i = 1; i < rows - 1; ++i) {
-        for (size_type j = 1; j < cols - 1; ++j) {
+    for (size_type i = 0; i < rows; ++i) {
+        for (size_type j = 0; j < cols; ++j) {
             auto type = content[i][j].getType();
             if (!(type == point_type::SNAKE_HEAD
                 || type == point_type::SNAKE_BODY
-                || type == point_type::SNAKE_TAIL)) {
+                || type == point_type::SNAKE_TAIL
+                || type == point_type::WALL)) {
                 return false;
             }
         }
