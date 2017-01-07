@@ -293,6 +293,7 @@ void Map::findMaxPath(const Pos &from, const Pos &to, const Direc &initDirec, li
 
             list<Direc> subpath;
             findMinPath(first, second, *i, subpath);
+            size_t subsize = subpath.size();
 
             if (subpath.size() > 1) {
                 showPathIfNeed(first, subpath);
@@ -310,10 +311,14 @@ void Map::findMaxPath(const Pos &from, const Pos &to, const Direc &initDirec, li
                     i = j;
                     i++;
                 }
+                for (size_t z = 0; z < subsize; z++) {
+                    i++;
+                }
+
             } else {
                 i++;
-                first = second;
             }
+            first = second;
         }
 
         showPathIfNeed(from, path);
