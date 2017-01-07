@@ -22,8 +22,8 @@ void Hamilton::generate(Map& map) {
     std::vector<Pos> empty;
     map.getEmptyPoints(empty);
 
-    Pos first = empty[0];
-    Pos second = empty[1];
+    Pos first = empty[1];
+    Pos second = empty[0];
     assert(first.getDirectionTo(second) != NONE);
 
     std::list<Direc> path;
