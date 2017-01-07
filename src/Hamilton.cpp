@@ -43,6 +43,9 @@ void Hamilton::generate(Map& map) {
     sequence[second.getX()][second.getY()] = 0;
 
     maxSequence = seq;
+    if (maxSequence+1 != empty.size()) {
+        throw std::runtime_error("Unable to generate covering hamilton path");
+    }
 }
 
 Pos Hamilton::next(const Pos& pos) const {
