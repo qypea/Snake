@@ -66,7 +66,7 @@ void Snake::setMap(std::shared_ptr<Map> m) {
 }
 
 void Snake::createBody() {
-    Pos p(1,1);
+    Pos p = map->randomEmpty();;
     for (int i=0; i<3; i++) {
         addBody(p);
         p = hamilton.next(p);
