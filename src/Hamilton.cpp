@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 void Hamilton::generate(Map& map) {
     size_t rows = map.getRowCount();
@@ -22,8 +23,14 @@ void Hamilton::generate(Map& map) {
     std::vector<Pos> empty;
     map.getEmptyPoints(empty);
 
-    Pos first = empty[1];
-    Pos second = empty[0];
+    Pos first = map.randomEmpty();
+    Pos second;
+    for (auto p : first.getAllAdjPos()) {
+        if (std::count(empty.begin(), empty.end(), p) == 1) {
+            second = p;
+            break;
+        }
+    }
     assert(first.getDirectionTo(second) != NONE);
 
     std::list<Direc> path;
