@@ -62,7 +62,16 @@ void Snake::setMap(std::shared_ptr<Map> m) {
     map->getEmptyPoints(emptySpaces);
     safeLength = emptySpaces.size() * 3 / 4;
 
-    hamilton.generate(*map);
+    for (int i=0; ; i++) {
+        try {
+            hamilton.generate(*map);
+            return;
+        } catch (std::exception& e) {
+            if (i >= 10) {
+                throw;
+            }
+        }
+    }
 }
 
 void Snake::createBody() {
