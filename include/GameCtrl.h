@@ -51,7 +51,6 @@ public:
     void setMapRow(const Map::size_type &n);
     void setMapCol(const Map::size_type &n);
     void setFPS(const double &fps_);
-    void setMoveInterval(const long &ms);
     void setEnableAI(const bool &enable);
     void setRunTest(const bool &b);
     void setRecordMovements(const bool &b);
@@ -71,7 +70,6 @@ private:
     long int score = 0;
     long int scoreFood = 100;
     long int scoreTime = -1;
-    double fps = 60.0;
     long moveInterval = 30;
     bool enableAI = true;
     bool runTest = false;

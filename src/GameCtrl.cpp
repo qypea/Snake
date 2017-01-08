@@ -35,7 +35,7 @@ void GameCtrl::sleepUntil(std::chrono::steady_clock::time_point tp, const long m
 }
 
 void GameCtrl::sleepByFPS() const {
-    sleepFor(static_cast<long>((1.0 / fps) * 1000));
+    sleepFor(moveInterval);
 }
 
 void GameCtrl::exitGame(const std::string &msg) {
@@ -62,15 +62,11 @@ void GameCtrl::setMapCol(const Map::size_type &n) {
 }
 
 void GameCtrl::setFPS(const double &fps_) {
-    fps = fps_;
+    moveInterval = static_cast<long>(1.0 / fps_ * 1000);
 }
 
 void GameCtrl::setEnableAI(const bool &enable) {
     enableAI = enable;
-}
-
-void GameCtrl::setMoveInterval(const long &ms) {
-    moveInterval = ms;
 }
 
 void GameCtrl::setRunTest(const bool &b) {
